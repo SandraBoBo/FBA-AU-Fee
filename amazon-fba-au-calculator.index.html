@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>亚马逊 FBA 澳洲费用计算器</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:           #f0f4ff;
+    --surface:      #ffffff;
+    --surface2:     #f7f9ff;
+    --border:       #d8e0f8;
+    --border-hover: #a8b8f0;
+    --blue:         #2563eb;
+    --blue-dk:      #1d4ed8;
+    --blue-lt:      #eff4ff;
+    --blue-mid:     #bfcffe;
+    --teal:         #0891b2;
+    --teal-lt:      #ecfeff;
+    --teal-mid:     #a5f3fc;
+    --red:          #dc2626;
+    --red-lt:       #fef2f2;
+    --green:        #16a34a;
+    --green-lt:     #f0fdf4;
+    --green-mid:    #bbf7d0;
+    --amber:        #d97706;
+    --amber-lt:     #fffbeb;
+    --text:         #0f172a;
+    --text-2:       #334155;
+    --text-3:       #64748b;
+    --text-4:       #94a3b8;
+    --radius:       18px;
+    --shadow:       0 2px 12px rgba(37,99,235,0.08), 0 1px 3px rgba(37,99,235,0.05);
+    --shadow-hover: 0 8px 28px rgba(37,99,235,0.14), 0 2px 6px rgba(37,99,235,0.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    padding: 56px 24px 100px;
+    position: relative;
+  }
+
+  /* Soft mesh background */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 0%, rgba(37,99,235,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 10% 100%, rgba(8,145,178,0.06) 0%, transparent 55%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .container { max-width: 960px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* ─── HEADER ─── */
+  header { margin-bottom: 52px; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--blue-lt);
+    border: 1.5px solid var(--blue-mid);
+    color: var(--blue);
+    font-family: 'Outfit', sans-serif;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 6px 16px; border-radius: 100px; margin-bottom: 22px;
+  }
+
+  .badge-dot {
+    width: 7px; height: 7px;
+    background: var(--blue); border-radius: 50%;
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+
+  h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(36px, 5.5vw, 60px);
+    font-weight: 800; line-height: 1.08;
+    letter-spacing: -0.025em;
+    color: var(--text);
+  }
+
+  h1 em { font-style: normal; color: var(--blue); }
+
+  .subtitle {
+    margin-top: 16px;
+    color: var(--text-3);
+    font-size: 17px; font-weight: 500; line-height: 1.65;
+  }
+
+  /* ─── CARD ─── */
+  .card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+    transition: box-shadow .25s, border-color .25s;
+  }
+
+  .card:hover { box-shadow: var(--shadow-hover); border-color: var(--border-hover); }
+
+  .section-label {
+    font-family: 'Outfit', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.13em; text-transform: uppercase;
+    color: var(--text-4);
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .section-label::after {
+    content: ''; flex: 1; height: 1.5px;
+    background: linear-gradient(90deg, var(--border), transparent);
+    border-radius: 2px;
+  }
+
+  /* ─── FORM ─── */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 24px;
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 10px; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  label {
+    font-size: 15px; font-weight: 700;
+    color: var(--text-2);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .tag-opt {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.05em;
+    background: var(--surface2); border: 1.5px solid var(--border);
+    color: var(--text-4); padding: 2px 8px; border-radius: 6px;
+    text-transform: uppercase;
+  }
+
+  .tag-req { color: var(--red); font-size: 20px; line-height: 1; margin-left: 1px; }
+
+  .input-wrap { position: relative; }
+
+  input {
+    width: 100%;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 17px; font-weight: 500;
+    padding: 15px 20px;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+  }
+
+  input:focus {
+    border-color: var(--blue);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(37,99,235,0.1);
+  }
+
+  input::placeholder { color: var(--text-4); font-weight: 400; }
+
+  .unit-badge {
+    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    font-family: 'Outfit', sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.05em;
+    color: var(--text-3);
+    background: var(--border); padding: 3px 9px; border-radius: 7px;
+    pointer-events: none;
+  }
+
+  .input-hint {
+    font-size: 14px; font-weight: 500;
+    color: var(--text-3); line-height: 1.6;
+  }
+
+  .btn-calc {
+    width: 100%; margin-top: 16px;
+    background: var(--blue); color: #fff;
+    border: none; border-radius: 13px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px; font-weight: 700; letter-spacing: 0.01em;
+    padding: 19px;
+    cursor: pointer;
+    transition: background .15s, transform .15s, box-shadow .2s;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.28);
+  }
+
+  .btn-calc:hover {
+    background: var(--blue-dk);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(37,99,235,0.36);
+  }
+
+  .btn-calc:active { transform: translateY(0); box-shadow: none; }
+
+  /* ─── ERROR ─── */
+  .error-banner {
+    background: var(--red-lt); border: 1.5px solid #fca5a5;
+    border-radius: 11px; padding: 14px 18px;
+    color: var(--red); font-size: 15px; font-weight: 600;
+    display: none; align-items: center; gap: 10px; margin-bottom: 20px;
+  }
+  .error-banner.show { display: flex; }
+
+  /* ─── RESULTS ─── */
+  #results {
+    display: none;
+    animation: slideUp .45s cubic-bezier(.16,1,.3,1) both;
+  }
+
+  @keyframes slideUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+
+  /* Segment banner */
+  .seg-banner {
+    display: flex; align-items: stretch;
+    background: var(--surface);
+    border: 1.5px solid var(--blue-mid);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 22px;
+    box-shadow: var(--shadow);
+  }
+
+  .seg-block {
+    flex: 1; padding: 26px 32px;
+  }
+
+  .seg-block + .seg-block {
+    border-left: 1.5px solid var(--blue-mid);
+    background: var(--blue-lt);
+    text-align: right;
+  }
+
+  .seg-tag {
+    font-family: 'Outfit', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.13em;
+    text-transform: uppercase; color: var(--blue);
+    margin-bottom: 10px;
+  }
+
+  .seg-val {
+    font-family: 'Outfit', sans-serif;
+    font-size: 32px; font-weight: 800;
+    color: var(--text); letter-spacing: -0.02em; line-height: 1;
+  }
+
+  .seg-val.blue  { color: var(--blue); }
+  .seg-val.teal  { color: var(--teal); }
+
+  /* Results grid */
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px; margin-bottom: 22px;
+  }
+
+  .ri {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 22px;
+    box-shadow: var(--shadow);
+    transition: box-shadow .2s, transform .2s, border-color .2s;
+    animation: fadeUp .35s ease both;
+  }
+
+  .ri:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: var(--border-hover); }
+
+  .ri.hl-blue  { background: var(--blue-lt);  border-color: var(--blue-mid); }
+  .ri.hl-teal  { background: var(--teal-lt);  border-color: var(--teal-mid); }
+  .ri.hl-green { background: var(--green-lt); border-color: var(--green-mid); }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+  .ri:nth-child(1){animation-delay:.04s} .ri:nth-child(2){animation-delay:.08s}
+  .ri:nth-child(3){animation-delay:.12s} .ri:nth-child(4){animation-delay:.16s}
+  .ri:nth-child(5){animation-delay:.20s} .ri:nth-child(6){animation-delay:.24s}
+  .ri:nth-child(7){animation-delay:.28s} .ri:nth-child(8){animation-delay:.32s}
+  .ri:nth-child(9){animation-delay:.36s}
+
+  .ri-name {
+    font-size: 14px; font-weight: 700;
+    color: var(--text-3); margin-bottom: 14px; line-height: 1.5;
+  }
+
+  .ri-val {
+    font-family: 'Outfit', sans-serif;
+    font-size: 34px; font-weight: 800;
+    letter-spacing: -0.02em; color: var(--text); line-height: 1;
+  }
+
+  .ri-val.c-blue  { color: var(--blue); }
+  .ri-val.c-teal  { color: var(--teal); }
+  .ri-val.c-green { color: var(--green); }
+  .ri-val.c-amber { color: var(--amber); }
+  .ri-val.c-na    { color: var(--text-4); font-size: 20px; font-weight: 600; }
+
+  .ri-sub {
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px; font-weight: 600;
+    color: var(--text-4); margin-top: 7px; letter-spacing: 0.03em;
+  }
+
+  /* SKU info */
+  .sku-info {
+    font-family: 'Outfit', monospace;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-3);
+    padding: 14px 0 0;
+    border-top: 1.5px solid var(--border);
+    margin-top: 4px; line-height: 1.8;
+  }
+
+  /* ─── BATCH UPLOAD ─── */
+  .batch-hint {
+    font-size: 14px; font-weight: 500; color: var(--text-3);
+    background: var(--blue-lt); border: 1.5px solid var(--blue-mid);
+    border-radius: 10px; padding: 12px 16px; margin-bottom: 22px;
+    line-height: 1.7;
+  }
+  .batch-hint strong { color: var(--blue); font-weight: 700; }
+
+  .drop-zone {
+    border: 2.5px dashed var(--border-hover);
+    border-radius: 14px;
+    background: var(--surface2);
+    padding: 44px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--blue);
+    background: var(--blue-lt);
+  }
+  .drop-icon { color: var(--blue); margin-bottom: 14px; }
+  .drop-title { font-size: 16px; font-weight: 700; color: var(--text-2); margin-bottom: 6px; }
+  .drop-sub   { font-size: 13px; font-weight: 500; color: var(--text-4); }
+
+  .batch-status {
+    margin-top: 18px; padding: 13px 18px;
+    border-radius: 10px; font-size: 14px; font-weight: 600;
+  }
+  .batch-status.ok  { background: var(--green-lt); color: var(--green); border: 1.5px solid var(--green-mid); }
+  .batch-status.err { background: var(--red-lt);   color: var(--red);   border: 1.5px solid #fca5a5; }
+  .batch-status.processing { background: var(--amber-lt); color: var(--amber); border: 1.5px solid #fde68a; }
+
+  .preview-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+    margin: 24px 0 16px;
+  }
+  #previewCount { font-size: 14px; font-weight: 700; color: var(--text-3); }
+
+  .btn-download {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--green); color: #fff;
+    border: none; border-radius: 10px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px; font-weight: 700;
+    padding: 11px 22px; cursor: pointer;
+    box-shadow: 0 3px 12px rgba(22,163,74,0.28);
+    transition: background .15s, transform .15s, box-shadow .2s;
+  }
+  .btn-download:hover {
+    background: #15803d; transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(22,163,74,0.36);
+  }
+  .btn-download:active { transform: translateY(0); }
+
+  .table-scroll { overflow-x: auto; border-radius: 12px; border: 1.5px solid var(--border); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; white-space: nowrap; }
+  thead tr { background: var(--surface2); }
+  th {
+    padding: 11px 14px; text-align: left;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--text-3);
+    border-bottom: 1.5px solid var(--border);
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-2); font-weight: 500;
+    font-family: 'Outfit', sans-serif;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--blue-lt); }
+  td.err-cell { color: var(--red); font-weight: 600; }
+  td.num { color: var(--blue); font-weight: 700; }
+  td.seg { color: var(--teal); font-weight: 700; }
+
+  footer {
+    text-align: center;
+    color: var(--text-4);
+    font-size: 13px; font-weight: 500;
+    margin-top: 48px; line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="badge"><span class="badge-dot"></span>Amazon AU · FBA</div>
+    <h1>澳洲 FBA<br><em>费用计算器</em></h1>
+    <p class="subtitle">输入包装尺寸与重量，立即获取配送费、仓储费等完整费用预估</p>
+  </header>
+
+  <!-- Input Card -->
+  <div class="card">
+    <div class="section-label">填写商品信息</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>SKU <span class="tag-opt">选填</span></label>
+        <div class="input-wrap">
+          <input type="text" id="sku" placeholder="如 KID1030-60-MT">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>售价 <span class="tag-opt">选填</span></label>
+        <div class="input-wrap">
+          <input type="number" id="price" placeholder="0.00" min="0" step="0.01" style="padding-right:64px">
+          <span class="unit-badge">AUD</span>
+        </div>
+      </div>
+      <div class="form-group full">
+        <label>尺寸 &amp; 重量 <span class="tag-req">*</span></label>
+        <div class="input-wrap">
+          <input type="text" id="dimWeight"
+            placeholder="长，宽，高（cm），重量（kg）— 如：89.5，39.5，23，2.65"
+            autocomplete="off" inputmode="decimal">
+        </div>
+        <div class="input-hint">依次填写长宽高和重量，逗号分隔（全角半角均可）；前三个数自动按大到小排列</div>
+      </div>
+    </div>
+
+    <div class="error-banner" id="errorBanner">
+      <span>⚠</span><span id="errorMsg">请填写必填项</span>
+    </div>
+
+    <button class="btn-calc" onclick="calculate()">立即计算费用 →</button>
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+    <div class="seg-banner">
+      <div class="seg-block">
+        <div class="seg-tag">尺寸分段</div>
+        <div class="seg-val blue" id="resSegment">—</div>
+      </div>
+      <div class="seg-block">
+        <div class="seg-tag">发货重量（实重 / 体积重取大值）</div>
+        <div class="seg-val teal" id="resShipWeight">—</div>
+      </div>
+    </div>
+
+    <div class="results-grid">
+      <div class="ri hl-blue">
+        <div class="ri-name">FBA 配送费预估</div>
+        <div class="ri-val c-blue" id="resFBA">—</div>
+        <div class="ri-sub">AUD</div>
+      </div>
+      <div class="ri">
+        <div class="ri-name">多渠道配送费预估</div>
+        <div class="ri-val" id="resMCF">—</div>
+        <div class="ri-sub">AUD</div>
+      </div>
+      <div class="ri">
+        <div class="ri-name">Easy Ship 费用预估</div>
+        <div class="ri-val" id="resEasyShip">—</div>
+        <div class="ri-sub">AUD</div>
+      </div>
+      <div class="ri">
+        <div class="ri-name">Easy Ship Zone A</div>
+        <div class="ri-val c-teal" id="resZoneA">—</div>
+        <div class="ri-sub">AUD</div>
+      </div>
+      <div class="ri">
+        <div class="ri-name">Easy Ship Zone C</div>
+        <div class="ri-val" id="resZoneC">—</div>
+        <div class="ri-sub">AUD</div>
+      </div>
+      <div class="ri hl-teal">
+        <div class="ri-name">1–9 月仓储费预估</div>
+        <div class="ri-val c-teal" id="resStorage19">—</div>
+        <div class="ri-sub">AUD / 月</div>
+      </div>
+      <div class="ri">
+        <div class="ri-name">10–12 月仓储费预估</div>
+        <div class="ri-val" id="resStorage1012">—</div>
+        <div class="ri-sub">AUD / 月</div>
+      </div>
+      <div class="ri hl-green">
+        <div class="ri-name">弃置费预估</div>
+        <div class="ri-val c-green" id="resDisposal">—</div>
+        <div class="ri-sub">AUD</div>
+      </div>
+      <div class="ri">
+        <div class="ri-name">退货处理费预估</div>
+        <div class="ri-val c-amber" id="resReturn">—</div>
+        <div class="ri-sub">AUD</div>
+      </div>
+    </div>
+
+    <div id="skuInfo" class="sku-info" style="display:none"></div>
+  </div>
+
+  <!-- Batch Upload Card -->
+  <div class="card" id="batchCard">
+    <div class="section-label">批量计算 · 上传表格</div>
+
+    <div class="batch-hint">
+      表格需包含列：<strong>sku</strong>（选填）、<strong>长</strong>、<strong>宽</strong>、<strong>高</strong>（cm）、<strong>重量</strong>（kg），长宽高自动按大到小匹配
+    </div>
+
+    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+      <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none">
+      <div class="drop-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </div>
+      <div class="drop-title">点击选择 或 拖拽文件到此处</div>
+      <div class="drop-sub">支持 .xlsx / .xls 格式</div>
+    </div>
+
+    <div id="batchStatus" class="batch-status" style="display:none"></div>
+
+    <!-- Preview table -->
+    <div id="previewWrap" style="display:none">
+      <div class="preview-bar">
+        <span id="previewCount"></span>
+        <button class="btn-download" id="btnDownload" onclick="downloadResult()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          下载结果 Excel
+        </button>
+      </div>
+      <div class="table-scroll">
+        <table id="previewTable">
+          <thead>
+            <tr>
+              <th>SKU</th><th>长(cm)</th><th>宽(cm)</th><th>高(cm)</th><th>重量(kg)</th>
+              <th>尺寸分段</th><th>发货重量(kg)</th>
+              <th>FBA配送费</th><th>多渠道配送费</th><th>EasyShip费用</th>
+              <th>EasyShip ZoneA</th><th>EasyShip ZoneC</th>
+              <th>1-9月仓储费</th><th>10-12月仓储费</th>
+              <th>弃置费</th><th>退货处理费</th>
+            </tr>
+          </thead>
+          <tbody id="previewBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer>数据基于亚马逊澳洲 FBA 费用标准 · 仅供参考，实际费用以亚马逊官方为准</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// Helper: show/hide error
+function showError(msg) {
+  const el = document.getElementById('errorBanner');
+  document.getElementById('errorMsg').textContent = msg;
+  el.classList.add('show');
+}
+function hideError() {
+  document.getElementById('errorBanner').classList.remove('show');
+}
+
+function fmt(val) {
+  if (val === '' || val === null || val === undefined) return null;
+  if (typeof val === 'string' && val.includes('不适用')) return '不适用';
+  const n = parseFloat(val);
+  if (isNaN(n)) return null;
+  return n.toFixed(2);
+}
+
+function setResult(id, val, prefix = '') {
+  const el = document.getElementById(id);
+  // preserve original color class (c-blue, c-teal, etc.), only toggle c-na
+  const baseClass = el.className.replace(/\bc-na\b/g, '').trim();
+  if (val === null || val === '') {
+    el.textContent = '—';
+    el.className = baseClass + ' c-na';
+  } else if (val === '不适用') {
+    el.textContent = '不适用';
+    el.className = baseClass + ' c-na';
+  } else {
+    el.textContent = prefix + val;
+    el.className = baseClass;
+  }
+}
+
+// ===================== CORE CALCULATION LOGIC =====================
+
+function getSegment(c, d, e, weightG) {
+  if (!c || !d || !e || !weightG) return '';
+  if (c <= 20 && d <= 15 && e <= 1 && weightG <= 75) return '小号信封';
+  if (c <= 33 && d <= 23 && e <= 2.5 && weightG <= 475) return '标准信封';
+  if (c <= 33 && d <= 23 && e <= 5 && weightG <= 975) return '大号信封';
+  if (c <= 45 && d <= 34 && e <= 20 && weightG <= 12000) return '包裹';
+  if (c <= 61 && d <= 46 && e <= 46 && weightG <= 2000) return '小号大件';
+  if (c <= 105 && d <= 60 && e <= 60 && weightG <= 22000) return '标准大件';
+  if ((c > 105 || d > 60 || e > 60) && weightG <= 35000) return '大号大件';
+  if ((c > 105 || d > 60 || e > 60) && weightG > 35000 && weightG < 250000) return '超大尺寸';
+  return '';
+}
+
+function calcFBA(segment, weightG, shipWeightKg, price) {
+  const H = shipWeightKg;     // KG
+  const F = H * 1000;         // G — Excel列F = H*1000（发货重量换算克，非原始重量）
+  const priceEmpty = price === '' || price === null || price === undefined;
+  const highPrice = priceEmpty || parseFloat(price) >= 13;
+
+  const p = (a, b) => highPrice ? a : b; // price selector
+
+  const envelopes = ['小号信封','标准信封','大号信封','包裹'];
+  const large = ['小号大件','标准大件','大号大件','超大尺寸'];
+
+  if (segment === '小号信封') return p(4.55, 3.64);
+
+  if (segment === '标准信封') {
+    if (F <= 75) return p(4.58, 3.67);
+    if (F <= 225) return p(5.26, 4.35);
+    if (F <= 475) return p(5.61, 4.70);
+    return null;
+  }
+
+  if (segment === '大号信封') {
+    if (F <= 225) return p(6.78, 5.87);
+    if (F <= 475) return p(7.02, 6.11);
+    if (F <= 975) return p(8.29, 7.38);
+    return null;
+  }
+
+  if (segment === '包裹') {
+    if (F <= 250) return p(7.34, 6.43);
+    if (F <= 500) return p(7.64, 6.73);
+    if (F <= 1000) return p(9.22, 8.31);
+    if (F <= 1500) return p(9.68, 8.77);
+    if (F <= 2000) return p(9.81, 8.90);
+    if (F <= 3000) return p(9.86, 8.95);
+    if (F <= 4000) return p(10.18, 9.27);
+    if (F <= 5000) return p(10.19, 9.28);
+    if (F <= 6000) return p(11.10, 10.19);
+    if (F <= 8000) return p(11.26, 10.35);
+    if (F <= 10000) return p(11.27, 10.36);
+    if (F <= 11000) return p(13.80, 12.89);
+    if (F <= 12000) return p(13.93, 13.02);
+    return null;
+  }
+
+  if (segment === '小号大件') {
+    if (F <= 1000) return p(9.94, 9.03);
+    if (F <= 1250) return p(10.41, 9.50);
+    if (F <= 1500) return p(10.65, 9.74);
+    if (F <= 2000) return p(10.66, 9.75);
+    if (F > 2000) return p(11.43 + (H - 2) * 0.01, 10.52 + (H - 2) * 0.01);
+    return null;
+  }
+
+  if (segment === '标准大件') {
+    if (F <= 1000) return p(12.30, 11.39);
+    if (F <= 2000) return p(12.95, 12.04);
+    if (F <= 3000) return p(13.04, 12.13);
+    if (F <= 4000) return p(13.18, 12.27);
+    if (F <= 5000) return p(13.41, 12.50);
+    if (F <= 6000) return p(14.31, 13.40);
+    if (F <= 7000) return p(14.46, 13.55);
+    if (F <= 8000) return p(14.48, 13.57);
+    if (F <= 10000) return p(14.52, 13.61);
+    if (F <= 15000) return p(15.86, 14.95);
+    if (F <= 22000) return p(16.42, 15.51);
+    if (F > 22000) return p(19.39 + (H - 22) * 0.01, 18.48 + (H - 22) * 0.01);
+    return null;
+  }
+
+  if (segment === '大号大件') {
+    if (F <= 5000) return p(17.80, 16.89);
+    if (F <= 10000) return p(19.35, 18.44);
+    if (F <= 15000) return p(21.15, 20.24);
+    if (F <= 20000) return p(21.48, 20.57);
+    if (F <= 25000) return p(22.52, 21.61);
+    if (F <= 30000) return p(26.88, 25.97);
+    if (F <= 35000) return p(26.91, 26.00);
+    if (F > 35000) return p(38.59 + (H - 35) * 0.1, 37.68 + (H - 35) * 0.1);
+    return null;
+  }
+
+  if (segment === '超大尺寸') {
+    if (F <= 35000) return p(90.00, 89.09);
+    if (F > 35000) return p(90 + (H - 35) * 0.1, 89.09 + (H - 35) * 0.1);
+    return null;
+  }
+
+  return null;
+}
+
+function calcMCF(H) {
+  if (!H || H === 0) return null;
+  if (H <= 0.5) return 7.99;
+  if (H <= 3) return 10.90;
+  if (H <= 5) return 13.55;
+  if (H <= 10) return 17.34;
+  if (H <= 15) return 24.87;
+  if (H <= 25) return 30.78;
+  return '不适用';
+}
+
+function calcEasyShip(H) {
+  if (!H || H === 0) return null;
+  if (H <= 0.5) return 4.67;
+  if (H <= 3) return 6.47;
+  if (H <= 5) return 7.47;
+  if (H <= 10) return 9.88;
+  if (H <= 15) return 13.81;
+  if (H <= 25) return 16.69;
+  return '不适用';
+}
+
+function calcZoneA(H) {
+  if (!H || H === 0) return null;
+  if (H <= 0.5) return 3.81;
+  if (H <= 3) return 4.85;
+  if (H <= 5) return 5.33;
+  if (H <= 10) return 6.23;
+  if (H <= 20) return 6.44;
+  if (H <= 25) return 6.50;
+  return '不适用';
+}
+
+function calcZoneC(H) {
+  if (!H || H === 0) return null;
+  if (H <= 25) {
+    if (H <= 0.5) return 6.03;
+    if (H <= 3) return 7.68;
+    if (H <= 5) return 9.56;
+    if (H <= 10) return 12.20;
+    if (H <= 15) return 16.52;
+    if (H <= 20) return 20.84;
+    return 23.43;
+  }
+  return '不适用';
+}
+
+function calcStorage19(segment, volume) {
+  const envelopes = ['小号信封','标准信封','大号信封','包裹'];
+  const large = ['小号大件','标准大件','大号大件','超大尺寸'];
+  if (envelopes.includes(segment)) return volume * 37;
+  if (large.includes(segment)) return volume * 34.2;
+  return null;
+}
+
+function calcStorage1012(segment, volume) {
+  const envelopes = ['小号信封','标准信封','大号信封','包裹'];
+  const large = ['小号大件','标准大件','大号大件','超大尺寸'];
+  if (envelopes.includes(segment)) return volume * 51.8;
+  if (large.includes(segment)) return volume * 48;
+  return null;
+}
+
+function calcDisposal(segment, weightG, shipWeightKg) {
+  const H = shipWeightKg;
+  const F = H * 1000; // Excel: F = H*1000（发货重量克）
+  const envelopes = ['小号信封','标准信封','大号信封','包裹'];
+  const large = ['小号大件','标准大件','大号大件','超大尺寸'];
+  if (envelopes.includes(segment)) {
+    if (F <= 200) return 0.21;
+    if (F <= 500) return 0.37;
+    if (F <= 1000) return 0.53;
+    return 0.59 + (H - 1) * 0.29;
+  }
+  if (large.includes(segment)) {
+    if (F <= 500) return 0.26;
+    if (F <= 1000) return 0.47;
+    if (F <= 2000) return 0.70;
+    if (F <= 5000) return 1.29;
+    return 2.20 + (H - 5) * 0.29;
+  }
+  return null;
+}
+
+function calcReturn(segment, weightG, shipWeightKg) {
+  const H = shipWeightKg;
+  const F = H * 1000; // Excel: F = H*1000（发货重量克）
+  const envelopes = ['小号信封','标准信封','大号信封','包裹'];
+  const large = ['小号大件','标准大件','大号大件','超大尺寸'];
+  if (envelopes.includes(segment)) {
+    if (F <= 500) return 0.65;
+    if (F <= 1000) return 0.84;
+    return 1.01 + (H - 1) * 0.29;
+  }
+  if (large.includes(segment)) {
+    if (F <= 500) return 0.75;
+    if (F <= 1000) return 1.13;
+    if (F <= 2000) return 1.45;
+    if (F <= 5000) return 2.20;
+    return 3.30 + (H - 5) * 0.29;
+  }
+  return null;
+}
+
+// ===================== MAIN CALCULATE =====================
+function parseDimWeight() {
+  const raw = document.getElementById('dimWeight').value.trim();
+  // 全角逗号、中文顿号、空格均转为半角逗号
+  const normalized = raw.replace(/[，、\s]+/g, ',').replace(/,+/g, ',').replace(/^,|,$/g, '');
+  const parts = normalized.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
+  return parts;
+}
+
+function calculate() {
+  hideError();
+
+  const sku = document.getElementById('sku').value.trim();
+  const priceRaw = document.getElementById('price').value.trim();
+
+  const parts = parseDimWeight();
+  if (parts.length < 4) {
+    showError('请输入四个数值：长，宽，高，重量（如：89.5，39.5，23，2.65）');
+    return;
+  }
+  const [d1, d2, d3, weightKg] = parts;
+
+  if (isNaN(d1) || isNaN(d2) || isNaN(d3)) {
+    showError('尺寸数值无效，请检查输入');
+    return;
+  }
+  if (isNaN(weightKg) || weightKg <= 0) {
+    showError('重量数值无效，请检查输入');
+    return;
+  }
+
+  // Sort dimensions: largest, 2nd, smallest
+  const dims = [d1, d2, d3].sort((a, b) => b - a);
+  const cMax = dims[0], dMid = dims[1], eMin = dims[2];
+
+  const weightG = weightKg * 1000;
+  const volumeWeightKg = (d1 * d2 * d3) / 4000; // 体积重量 KG
+  const volumeM3 = (d1 * d2 * d3) / 1000000;     // 体积 m³
+  const shipWeightKg = Math.max(weightKg, volumeWeightKg);
+
+  const price = priceRaw === '' ? null : parseFloat(priceRaw);
+
+  // F in Excel = H * 1000，即发货重量（kg）换算为克，用于费率区间判断
+  const F_for_fee = shipWeightKg * 1000;
+
+  // Segment（尺寸分段仍用实重克数判断）
+  const segment = getSegment(cMax, dMid, eMin, weightG);
+  if (!segment) {
+    showError('无法匹配尺寸分段，请检查输入的尺寸与重量是否在亚马逊允许范围内');
+    return;
+  }
+
+  // Calculations
+  const fba = calcFBA(segment, F_for_fee, shipWeightKg, price);
+  const mcf = calcMCF(shipWeightKg);
+  const es = calcEasyShip(shipWeightKg);
+  const za = calcZoneA(shipWeightKg);
+  const zc = calcZoneC(shipWeightKg);
+  const s19 = calcStorage19(segment, volumeM3);
+  const s1012 = calcStorage1012(segment, volumeM3);
+  const disp = calcDisposal(segment, F_for_fee, shipWeightKg);
+  const ret = calcReturn(segment, F_for_fee, shipWeightKg);
+
+  // Display
+  document.getElementById('resSegment').textContent = segment;
+  document.getElementById('resShipWeight').textContent = shipWeightKg.toFixed(3) + ' KG';
+
+  setResult('resFBA', fmt(fba), 'A$');
+  setResult('resMCF', typeof mcf === 'number' ? fmt(mcf) : mcf, typeof mcf === 'number' ? 'A$' : '');
+  setResult('resEasyShip', typeof es === 'number' ? fmt(es) : es, typeof es === 'number' ? 'A$' : '');
+  setResult('resZoneA', typeof za === 'number' ? fmt(za) : za, typeof za === 'number' ? 'A$' : '');
+  setResult('resZoneC', typeof zc === 'number' ? fmt(zc) : zc, typeof zc === 'number' ? 'A$' : '');
+  setResult('resStorage19', fmt(s19), 'A$');
+  setResult('resStorage1012', fmt(s1012), 'A$');
+  setResult('resDisposal', fmt(disp), 'A$');
+  setResult('resReturn', fmt(ret), 'A$');
+
+  const skuInfo = document.getElementById('skuInfo');
+  if (sku) {
+    skuInfo.style.display = 'block';
+    skuInfo.textContent = `SKU: ${sku}  ·  尺寸: ${d1} × ${d2} × ${d3} cm  ·  重量: ${weightKg} kg  ·  体积重: ${volumeWeightKg.toFixed(3)} kg  ·  体积: ${(volumeM3 * 1000000).toFixed(1)} cm³`;
+  } else {
+    skuInfo.style.display = 'none';
+  }
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.style.animation = 'none';
+  void results.offsetHeight;
+  results.style.animation = '';
+  results.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// Allow Enter key to calculate
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') calculate();
+});
+
+// Live calculation on input change
+document.getElementById('dimWeight').addEventListener('input', () => {
+  const parts = parseDimWeight();
+  if (parts.length >= 4) calculate();
+});
+document.getElementById('price').addEventListener('input', () => {
+  const parts = parseDimWeight();
+  if (parts.length >= 4) calculate();
+});
+
+// ===================== BATCH UPLOAD =====================
+
+let batchResultRows = []; // store computed rows for download
+
+// Drag-and-drop
+const dropZone = document.getElementById('dropZone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) processBatchFile(file);
+});
+document.getElementById('fileInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (file) processBatchFile(file);
+});
+
+function setBatchStatus(msg, type) {
+  const el = document.getElementById('batchStatus');
+  el.style.display = 'block';
+  el.className = 'batch-status ' + type;
+  el.textContent = msg;
+}
+
+// Column aliases (case-insensitive)
+function findCol(headers, candidates) {
+  for (const c of candidates) {
+    const idx = headers.findIndex(h => String(h).trim().toLowerCase() === c.toLowerCase());
+    if (idx >= 0) return idx;
+  }
+  return -1;
+}
+
+function fmtN(v) {
+  if (v === null || v === undefined) return '';
+  if (v === '不适用') return '不适用';
+  return typeof v === 'number' ? v.toFixed(2) : String(v);
+}
+
+function calcRowFull(rawD1, rawD2, rawD3, rawW, rawPrice) {
+  const d1 = parseFloat(rawD1), d2 = parseFloat(rawD2), d3 = parseFloat(rawD3);
+  const weightKg = parseFloat(rawW);
+  const price = (rawPrice === undefined || rawPrice === null || rawPrice === '') ? null : parseFloat(rawPrice);
+
+  if (isNaN(d1) || isNaN(d2) || isNaN(d3)) return { error: '尺寸无效' };
+  if (isNaN(weightKg) || weightKg <= 0) return { error: '重量无效' };
+
+  const dims = [d1, d2, d3].sort((a, b) => b - a);
+  const [cMax, dMid, eMin] = dims;
+
+  const weightG = weightKg * 1000;
+  const volumeWeightKg = (d1 * d2 * d3) / 4000;
+  const volumeM3 = (d1 * d2 * d3) / 1000000;
+  const shipWeightKg = Math.max(weightKg, volumeWeightKg);
+
+  const segment = getSegment(cMax, dMid, eMin, weightG);
+  if (!segment) return { error: '无法匹配尺寸分段' };
+
+  return {
+    segment,
+    shipWeightKg,
+    fba:      calcFBA(segment, null, shipWeightKg, price),
+    mcf:      calcMCF(shipWeightKg),
+    es:       calcEasyShip(shipWeightKg),
+    za:       calcZoneA(shipWeightKg),
+    zc:       calcZoneC(shipWeightKg),
+    s19:      calcStorage19(segment, volumeM3),
+    s1012:    calcStorage1012(segment, volumeM3),
+    disposal: calcDisposal(segment, null, shipWeightKg),
+    ret:      calcReturn(segment, null, shipWeightKg),
+  };
+}
+
+function processBatchFile(file) {
+  setBatchStatus('正在读取文件…', 'processing');
+  document.getElementById('previewWrap').style.display = 'none';
+  batchResultRows = [];
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb = XLSX.read(e.target.result, { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const raw = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+
+      if (raw.length < 2) { setBatchStatus('表格没有数据行', 'err'); return; }
+
+      const headers = raw[0].map(h => String(h).trim());
+      const iSku    = findCol(headers, ['sku', 'SKU', '编号']);
+      const iLen    = findCol(headers, ['长', '长度', 'length', 'l']);
+      const iWid    = findCol(headers, ['宽', '宽度', 'width', 'w']);
+      const iHei    = findCol(headers, ['高', '高度', 'height', 'h']);
+      const iWgt    = findCol(headers, ['重量', 'weight', 'kg', '克重']);
+      const iPrice  = findCol(headers, ['售价', 'price', '价格']);
+
+      if (iLen < 0 || iWid < 0 || iHei < 0 || iWgt < 0) {
+        setBatchStatus('未找到必要列（长、宽、高、重量），请检查表头', 'err'); return;
+      }
+
+      const tbody = document.getElementById('previewBody');
+      tbody.innerHTML = '';
+
+      let okCount = 0, errCount = 0;
+
+      for (let i = 1; i < raw.length; i++) {
+        const row = raw[i];
+        // skip fully empty rows
+        if (row.every(c => c === '' || c === null || c === undefined)) continue;
+
+        const sku   = iSku >= 0 ? String(row[iSku] ?? '') : '';
+        const price = iPrice >= 0 ? row[iPrice] : null;
+        const res   = calcRowFull(row[iLen], row[iWid], row[iHei], row[iWgt], price);
+
+        const d1 = parseFloat(row[iLen]), d2 = parseFloat(row[iWid]), d3 = parseFloat(row[iHei]);
+        const wt = parseFloat(row[iWgt]);
+
+        const resultRow = {
+          sku,
+          d1: isNaN(d1) ? '' : d1,
+          d2: isNaN(d2) ? '' : d2,
+          d3: isNaN(d3) ? '' : d3,
+          wt: isNaN(wt) ? '' : wt,
+          ...res,
+        };
+        batchResultRows.push(resultRow);
+
+        const tr = document.createElement('tr');
+        if (res.error) {
+          errCount++;
+          tr.innerHTML = `
+            <td>${sku}</td>
+            <td>${resultRow.d1}</td><td>${resultRow.d2}</td><td>${resultRow.d3}</td><td>${resultRow.wt}</td>
+            <td class="err-cell" colspan="11">${res.error}</td>`;
+        } else {
+          okCount++;
+          tr.innerHTML = `
+            <td>${sku}</td>
+            <td>${resultRow.d1}</td><td>${resultRow.d2}</td><td>${resultRow.d3}</td><td>${resultRow.wt}</td>
+            <td class="seg">${res.segment}</td>
+            <td class="num">${res.shipWeightKg.toFixed(3)}</td>
+            <td class="num">${fmtN(res.fba)}</td>
+            <td>${fmtN(res.mcf)}</td>
+            <td>${fmtN(res.es)}</td>
+            <td>${fmtN(res.za)}</td>
+            <td>${fmtN(res.zc)}</td>
+            <td>${fmtN(res.s19)}</td>
+            <td>${fmtN(res.s1012)}</td>
+            <td>${fmtN(res.disposal)}</td>
+            <td>${fmtN(res.ret)}</td>`;
+        }
+        tbody.appendChild(tr);
+      }
+
+      document.getElementById('previewCount').textContent =
+        `共 ${okCount + errCount} 条 · 成功 ${okCount} 条${errCount > 0 ? ' · 失败 ' + errCount + ' 条' : ''}`;
+      document.getElementById('previewWrap').style.display = 'block';
+      setBatchStatus(`✓ 计算完成，共处理 ${okCount + errCount} 条数据`, 'ok');
+    } catch(err) {
+      setBatchStatus('文件解析失败：' + err.message, 'err');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function downloadResult() {
+  if (!batchResultRows.length) return;
+
+  const headers = [
+    'SKU', '长(cm)', '宽(cm)', '高(cm)', '重量(kg)',
+    '尺寸分段', '发货重量(kg)',
+    'FBA配送费(AUD)', '多渠道配送费(AUD)', 'EasyShip费用(AUD)',
+    'EasyShip ZoneA(AUD)', 'EasyShip ZoneC(AUD)',
+    '1-9月仓储费(AUD)', '10-12月仓储费(AUD)',
+    '弃置费(AUD)', '退货处理费(AUD)'
+  ];
+
+  const data = [headers];
+  for (const r of batchResultRows) {
+    if (r.error) {
+      data.push([r.sku, r.d1, r.d2, r.d3, r.wt, r.error, '', '', '', '', '', '', '', '', '', '']);
+    } else {
+      const n = v => (v === null || v === undefined) ? '' : (v === '不适用' ? '不适用' : parseFloat(Number(v).toFixed(4)));
+      data.push([
+        r.sku, r.d1, r.d2, r.d3, r.wt,
+        r.segment,
+        parseFloat(r.shipWeightKg.toFixed(4)),
+        n(r.fba), n(r.mcf), n(r.es), n(r.za), n(r.zc),
+        n(r.s19), n(r.s1012), n(r.disposal), n(r.ret)
+      ]);
+    }
+  }
+
+  const ws = XLSX.utils.aoa_to_sheet(data);
+
+  // Column widths
+  ws['!cols'] = [
+    {wch:14},{wch:9},{wch:9},{wch:9},{wch:10},
+    {wch:12},{wch:14},
+    {wch:14},{wch:16},{wch:16},
+    {wch:18},{wch:18},
+    {wch:16},{wch:16},{wch:12},{wch:14}
+  ];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'FBA费用计算');
+
+  const ts = new Date().toISOString().slice(0,10);
+  XLSX.writeFile(wb, `FBA费用计算结果_AU_${ts}.xlsx`);
+}
+</script>
+</body>
+</html>
