@@ -712,15 +712,83 @@ function calcFBA(segment, weightG, shipWeightKg, price) {
   return null;
 }
 
-function calcMCF(H) {
-  if (!H || H === 0) return null;
-  if (H <= 0.5) return 7.99;
-  if (H <= 3) return 10.90;
-  if (H <= 5) return 13.55;
-  if (H <= 10) return 17.34;
-  if (H <= 15) return 24.87;
-  if (H <= 25) return 30.78;
-  return '不适用';
+function calcMCF(shipWeightKg, segment) {
+  if (!shipWeightKg || shipWeightKg === 0 || !segment) return null;
+  const H = shipWeightKg;
+  const F = H * 1000; // 发货重量克，与Excel一致
+
+  if (segment === '小号信封') {
+    if (F <= 75) return 7.06;
+    return null;
+  }
+  if (segment === '标准信封') {
+    if (F <= 75)  return 7.39;
+    if (F <= 225) return 8.09;
+    if (F <= 475) return 8.49;
+    return null;
+  }
+  if (segment === '大号信封') {
+    if (F <= 225) return 8.77;
+    if (F <= 475) return 8.76;
+    if (F <= 975) return 9.96;
+    return null;
+  }
+  if (segment === '包裹') {
+    if (F <= 250)  return 8.81;
+    if (F <= 500)  return 9.52;
+    if (F <= 1000) return 11.71;
+    if (F <= 1500) return 14.70;
+    if (F <= 2000) return 16.80;
+    if (F <= 3000) return 20.36;
+    if (F <= 4000) return 22.48;
+    if (F <= 5000) return 24.38;
+    if (F <= 6000) return 25.99;
+    if (F <= 7000) return 27.07;
+    if (F <= 8000) return 28.15;
+    if (F <= 9000) return 29.22;
+    if (F <= 10000) return 30.30;
+    if (F <= 11000) return 31.38;
+    if (F <= 12000) return 32.45;
+    return null;
+  }
+  if (segment === '小号大件') {
+    if (F <= 1000) return 21.03;
+    if (F <= 1250) return 22.05;
+    if (F <= 1500) return 25.73;
+    if (F <= 1750) return 26.35;
+    if (F <= 2000) return 27.33;
+    if (F > 2000)  return 27.33 + 3.2 * (H - 2);
+    return null;
+  }
+  if (segment === '标准大件') {
+    if (F <= 1000)  return 23.14;
+    if (F <= 2000)  return 27.44;
+    if (F <= 3000)  return 30.67;
+    if (F <= 4000)  return 33.90;
+    if (F <= 5000)  return 37.67;
+    if (F <= 6000)  return 40.89;
+    if (F <= 7000)  return 44.12;
+    if (F <= 8000)  return 47.35;
+    if (F <= 9000)  return 50.58;
+    if (F <= 10000) return 53.81;
+    if (F <= 15000) return 57.04;
+    if (F <= 20000) return 60.27;
+    if (F <= 22000) return 63.50;
+    if (F > 22000)  return 63.50 + 1.62 * (H - 22);
+    return null;
+  }
+  if (segment === '大号大件') {
+    if (F <= 5000)  return 45.20;
+    if (F <= 10000) return 50.58;
+    if (F <= 15000) return 55.96;
+    if (F <= 20000) return 61.34;
+    if (F <= 25000) return 72.11;
+    if (F <= 30000) return 82.87;
+    if (F <= 35000) return 93.63;
+    if (F > 35000)  return 93.63 + 1.62 * (H - 35);
+    return null;
+  }
+  return null;
 }
 
 function calcEasyShip(H) {
@@ -870,7 +938,7 @@ function calculate() {
 
   // Calculations
   const fba = calcFBA(segment, F_for_fee, shipWeightKg, price);
-  const mcf = calcMCF(shipWeightKg);
+  const mcf = calcMCF(shipWeightKg, segment);
   const es = calcEasyShip(shipWeightKg);
   const za = calcZoneA(shipWeightKg);
   const zc = calcZoneC(shipWeightKg);
@@ -987,7 +1055,7 @@ function calcRowFull(rawD1, rawD2, rawD3, rawW, rawPrice) {
     segment,
     shipWeightKg,
     fba:      calcFBA(segment, null, shipWeightKg, price),
-    mcf:      calcMCF(shipWeightKg),
+    mcf:      calcMCF(shipWeightKg, segment),
     es:       calcEasyShip(shipWeightKg),
     za:       calcZoneA(shipWeightKg),
     zc:       calcZoneC(shipWeightKg),
